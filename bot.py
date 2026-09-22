@@ -21,21 +21,23 @@ HEADERS = {
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
 user_state = {}  # временное состояние выбора (chat_id -> dict)
 
-import telebot.apihelper
+import telebot
+from telebot import ExceptionHandler
 
-# Игнорируем конфликт 409 (другой экземпляр уже опрашивает бота)
-@bot.message_handler(func=lambda m: False, content_types=['any'])
-def ignore_all(m):
-    pass
+class MyExceptionHandler(ExceptionHandler):
+    def handle(self, exception):
+        # Проверяем, что это ошибка Telegram API и код 409
+        if isinstance(exception, telebot.apihelper.ApiTelegramException):
+            if exception.error_code == 409:
+                print("⚠️ Конфликт 409: другой экземпляр уже запущен. Пропускаю...")
+                return True  # Подавляем ошибку, polling продолжит работу
+        # Для всех остальных исключений возвращаем False,
+        # чтобы telebot обработал их стандартным способом (вывел в лог)
+        return False
 
-def handle_409(exception):
-    if isinstance(exception, telebot.apihelper.ApiTelegramException):
-        if exception.error_code == 409:
-            print("⚠️ Конфликт 409: другой экземпляр бота уже запущен. Пропускаю...")
-            return True  # подавляем ошибку
-    return False
+# Передаём обработчик в конструктор TeleBot
+bot = telebot.TeleBot(TELEGRAM_TOKEN, exception_handler=MyExceptionHandler())
 
-bot.exception_handler = handle_409
 
 
 # --- Хранилище подписок ---
