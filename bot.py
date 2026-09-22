@@ -7,6 +7,8 @@ import telebot
 from telebot import types
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
+print("🚀 VERSION 2: debug_all_callbacks включён")
+
 # --- Настройки ---
 TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN')
 CHECK_INTERVAL = 60              # интервал проверки талонов (сек)
