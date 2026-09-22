@@ -303,7 +303,8 @@ if __name__ == "__main__":
     threading.Thread(target=run_health_server, daemon=True).start()
     threading.Thread(target=monitor_loop, daemon=True).start()
     print("Бот запущен")
-    bot.infinity_polling(timeout=30, long_polling_timeout=25)
-@bot.callback_query_handler(func=lambda c: True)
-def debug_all_callbacks(call):
-    print(f"🐛 CALLBACK: data={call.data!r}, from={call.message.chat.id}")
+    bot.infinity_polling(
+    timeout=30,
+    long_polling_timeout=25,
+    allowed_updates=["message", "callback_query"]
+)
