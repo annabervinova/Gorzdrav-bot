@@ -296,6 +296,10 @@ def run_health_server():
 
 
 # --- Запуск ---
+@bot.callback_query_handler(func=lambda c: True)
+def debug_all_callbacks(call):
+    print(f"🐛 CALLBACK: data={call.data!r}, from={call.message.chat.id}")
+
 if __name__ == "__main__":
     if not TELEGRAM_TOKEN:
         raise SystemExit("Не задан TELEGRAM_TOKEN в переменных окружения!")
@@ -306,5 +310,4 @@ if __name__ == "__main__":
     bot.infinity_polling(
     timeout=30,
     long_polling_timeout=25,
-    allowed_updates=["message", "callback_query"]
-)
+    allowed_updates=["message", "callback_query"])
