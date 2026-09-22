@@ -56,14 +56,6 @@ class MyExceptionHandler(ExceptionHandler):
         return True  # не даём потоку упасть
 
 bot = telebot.TeleBot(TELEGRAM_TOKEN, exception_handler=MyExceptionHandler())
-
-# =========================================================
-# Отладка: логируем ВСЕ callbacks (можно удалить после проверки)
-# =========================================================
-@bot.callback_query_handler(func=lambda c: True)
-def debug_all_callbacks(call):
-    log.info("🐛 CALLBACK: data=%r, from=%s", call.data, call.message.chat.id)
-
 # =========================================================
 # Хранилище подписок
 # =========================================================
