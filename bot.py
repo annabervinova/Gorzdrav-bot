@@ -19,6 +19,9 @@ HEADERS = {
 }
 
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
+@bot.callback_query_handler(func=lambda c: True)
+def debug_all_callbacks(call):
+    print(f"🐛 CALLBACK: data={call.data!r}, from={call.message.chat.id}")
 user_state = {}  # временное состояние выбора (chat_id -> dict)
 
 import telebot
@@ -293,12 +296,6 @@ class HealthHandler(BaseHTTPRequestHandler):
 def run_health_server():
     port = int(os.environ.get('PORT', 10000))
     HTTPServer(('0.0.0.0', port), HealthHandler).serve_forever()
-
-
-# --- Запуск ---
-@bot.callback_query_handler(func=lambda c: True)
-def debug_all_callbacks(call):
-    print(f"🐛 CALLBACK: data={call.data!r}, from={call.message.chat.id}")
 
 if __name__ == "__main__":
     if not TELEGRAM_TOKEN:
